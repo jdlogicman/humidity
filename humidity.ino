@@ -1,29 +1,16 @@
-/* How to use the DHT-22 sensor with Arduino uno
-   Temperature and humidity sensor
-   More info: http://www.ardumotive.com/how-to-use-dht-22-sensor-en.html
-   Dev: Michalis Vasilakis // Date: 1/7/2015 // www.ardumotive.com */
-
-//Libraries
 #include <DHT.h>
 
-//Constants
-#define HUMIDITY_ON_IF_BELOW        90.0        // on iff 90% or below
-#define HUMIDITY OFF_IF_ABOVE       95.0        // off if 95% or above
-#define HUMIDITY_MAX_ON_TIME_MS     60000       // run humidifier for max 1 min at a time
-#define HUMIDITY_WAIT_INTERVAL_MS   60000       // and don't run it again for at least a minute
-#define FAN_ON_DURATION_MS          30000       // 30 seconds
-#define FAN_ON_INTERVAL_MS          60*60*1000  // one per hour
 
 class HumidityController
 {
-  long _triggeredMs;
-  long _offMs;
   const float _onIfBelow;
   const float _offIfAbove;
-  const unsigned long _waitMs;
   const unsigned long _maxRunMs;
+  const unsigned long _waitMs;
   const int _pin;
-
+  long _offMs;
+  long _triggeredMs;
+  
   void turn_on()
   {
     digitalWrite(_pin, HIGH);
@@ -56,11 +43,6 @@ class HumidityController
         // it's on - see if we can turn it off
         if (humidity >= _offIfAbove || (now-_triggeredMs) >= _maxRunMs)
         {
-          Serial.println(humidity >= _offIfAbove);
-          Serial.println((now-_triggeredMs) >= _maxRunMs);
-          Serial.println(now);
-          Serial.println(_triggeredMs);
-          Serial.println(_maxRunMs);
           Serial.println("Turning off humidifier");
           turn_off();
         }
@@ -73,7 +55,7 @@ class HumidityController
     }
 };
 
-HumidityController humidityController(90, 95, 60000, 6000, 3);
+HumidityController humidityController(90, 95, 60000, 60000, 3);
 
 
 #define DHTPIN 2     // what pin we're connected to
