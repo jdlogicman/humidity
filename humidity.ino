@@ -13,13 +13,13 @@ class HumidityController
   
   void turn_on()
   {
-    digitalWrite(_pin, HIGH);
+    digitalWrite(_pin, LOW);
     _triggeredMs = millis();
     _offMs = 0;
   }
   void turn_off()
   {
-    digitalWrite(_pin, LOW);
+    digitalWrite(_pin, HIGH);
     _triggeredMs = 0;
     _offMs= millis();
   }
@@ -29,6 +29,8 @@ class HumidityController
     _offMs(0), _triggeredMs(0)
     {
       _offMs = millis();
+      pinMode(_pin, OUTPUT);
+      turn_off();
     }
     bool is_on() const
     {
@@ -83,6 +85,8 @@ void loop()
     Serial.print(temp);
     Serial.println(" F");
     humidityController.control(hum);
+    Serial.print("Humidifier is ");
+    Serial.println(humidityController.is_on() ? "ON" : "OFF");
     delay(2000); //Delay 2 sec.
 }
 
