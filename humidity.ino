@@ -1,4 +1,5 @@
-#include <DHT.h>
+#include "Adafruit_HTU21DF.h"
+// #include <DHT.h>
 
 
 class HumidityController
@@ -59,25 +60,28 @@ class HumidityController
 
 HumidityController humidityController(90, 95, 60000, 60000, 3);
 
-
+/*
 #define DHTPIN 2     // what pin we're connected to
 #define DHTTYPE DHT22   // DHT 22  (AM2302)
-DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
-
-
+DHT sensor(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
+*/
+Adafruit_HTU21DF sensor;
 
 
 
 void setup()
 {
   Serial.begin(9600);
-  dht.begin();
+  if (!sensor.begin()) {
+    Serial.println("Couldn't find sensor!");
+    delay(1000);
+  }
 }
 
 void loop()
 {
-    float hum = dht.readHumidity();
-    float temp = dht.readTemperature() * 9.0/5 + 32;
+    float hum = sensor.readHumidity();
+    float temp = sensor.readTemperature() * 9.0/5 + 32;
     
     Serial.print("Humidity: ");
     Serial.print(hum);
